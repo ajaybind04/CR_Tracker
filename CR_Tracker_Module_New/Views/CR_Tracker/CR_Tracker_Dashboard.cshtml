@@ -1,0 +1,182 @@
+﻿@model CR_Tracker_Module_New.Models.CR_Tracker_Details
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>CR Tracker | Admin Dashboard</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/Content/buttons.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/Content/cr-tracker-dashboard.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/font-awsome.js"></script>
+    <script src="~/Scripts/adminlte.min.js"></script>
+    <script src="~/Scripts/Chart.min.js"></script>
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap4.min.js"></script>
+    <script src="~/Scripts/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/buttons.bootstrap4.min.js"></script>
+    <script src="~/Scripts/jszip.min.js"></script>
+    <script src="~/Scripts/pdfmake.min.js"></script>
+    <script src="~/Scripts/vfs_fonts.js"></script>
+    <script src="~/Scripts/buttons.html5.min.js"></script>
+
+    <script src="~/Scripts/amcharts-core.js"></script>
+    <script src="~/Scripts/amcharts-charts.js"></script>
+    <script src="~/Scripts/amcharts-animated.js"></script>
+
+</head>
+<body>
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">CR Tracker Dashboard</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Admin Dashboard</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style> 
+    .selected-card-color { box-shadow: 0 0 17px 8px rgba(0, 0, 0, 0.125), 1px 2px 12px 7px rgba(0, 0, 0, 0.2); background: #f7dcbb; } 
+    .cr-count-dashboard {cursor:pointer; }
+    </style>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box cr-count-dashboard selected-card-color">
+                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-tasks"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">All CR Module</span>
+                        <span class="info-box-number"> @(Model.All_CR_Details_Count.HasValue ? Model.All_CR_Details_Count : 0) </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3 cr-count-dashboard">
+                    <span class="info-box-icon elevation-1" style="background-color: #fba4bd;"><i class="fas fa-chart-line"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Working</span>
+                        <span class="info-box-number"> @(Model.CR_Working_Count.HasValue ? Model.CR_Working_Count : 0) </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <!-- fix for small devices only -->
+            <div class="clearfix hidden-md-up"></div>
+
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3 cr-count-dashboard">
+                    <span class="info-box-icon elevation-1" style="background-color: #f5eb80;"><i class="fas fa-check-circle"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Completed</span>
+                        <span class="info-box-number"> @(Model.CR_Complete_Count.HasValue ? Model.CR_Complete_Count : 0) </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3 cr-count-dashboard">
+                    <span class="info-box-icon elevation-1" style="background-color: #67dc75;"><i class="fas fa-cloud-upload-alt"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">UAT</span>
+                        <span class="info-box-number">@(Model.CR_UAT_Count.HasValue ? Model.CR_UAT_Count : 0) </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-danger">
+                    <div class="card-header" style="background: gainsboro;">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-pie" style="color: #4c5d6d;"></i> Pie Chart <label style="margin: 0 20px 0 20px;">|</label> <i class="fas fa-chart-bar" style="color: #4c5d6d;"></i> Bar Chart
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!--Pie Chart-->
+                                <div id="chartdiv1"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <!--Bar Chart-->
+                                <div id="chartdiv2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE: LATEST ORDERS -->
+                <div class="card">
+                    <div class="overlay cr-details-table-overlay" style="display:none;">
+                        <i class="fas fa-2x fa-sync-alt fa-spin" style="font-size: 60px;"></i>
+                    </div>
+                    <div class="card-header border-transparent" style="background: gainsboro;">
+                        <h3 class="card-title"><i class="fas fa-database" style="color: #4c5d6d;"></i> CR Tracker Details</h3>
+                        <div class="card-tools">
+                            <a href="#" class="btn btn-sm btn-info float-left">Raise New CR</a>
+                            <a href="#" class="btn btn-sm btn-success float-left" style="margin: 0 10px 0 15px;">Refresh</a>
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><svg class="svg-inline--fa fa-minus fa-w-14" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="minus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg><!-- <i class="fas fa-minus"></i> --></button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="background-color: #d2f783; margin-top: 5px;">
+                            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="table-responsive" style="padding-top: 18px;padding-bottom: 6px;" id="cr_detailsP">
+                            <!--Here binding table records using "CR_Details_DataTableP" (Ajax)-->
+                            @{ Html.RenderAction("CR_Details_DataTableP", "CR_Tracker");}
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer clearfix" style="display: block;">
+                    </div>
+                    <!-- /.card-footer -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+    <!--CR Tracker Modal -->
+    @{ Html.RenderPartial("~/Views/CR_Tracker/Common_Modals/CR_Tracker_Logs_Modal.cshtml"); }
+</body>
+</html>
+<script src="~/Scripts/cr-tracker-dashboard.js"></script>

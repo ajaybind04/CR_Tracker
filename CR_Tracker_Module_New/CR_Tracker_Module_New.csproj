@@ -95,6 +95,27 @@
     <Content Include="Content\dataTables.bootstrap4.min.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\adminlte.min.js" />
+    <Content Include="Scripts\amcharts-animated.js" />
+    <Content Include="Scripts\amcharts-charts.js" />
+    <Content Include="Scripts\amcharts-core.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\buttons.bootstrap4.min.js" />
+    <Content Include="Scripts\buttons.html5.min.js" />
+    <Content Include="Scripts\Chart.min.js" />
+    <Content Include="Scripts\cr-tracker-dashboard.js" />
+    <Content Include="Scripts\dataTables.bootstrap4.min.js" />
+    <Content Include="Scripts\dataTables.buttons.min.js" />
+    <Content Include="Scripts\font-awsome.js" />
+    <Content Include="Scripts\jquery-1.12.2.min.js" />
+    <Content Include="Scripts\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\jquery-ui.js" />
+    <Content Include="Scripts\jquery.cookie.js" />
+    <Content Include="Scripts\jquery.dataTables.min.js" />
+    <Content Include="Scripts\jquery.min.js" />
+    <Content Include="Scripts\jszip.min.js" />
+    <Content Include="Scripts\pdfmake.min.js" />
+    <Content Include="Scripts\vfs_fonts.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +131,9 @@
   <ItemGroup>
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
+    <Content Include="Views\CR_Tracker\CR_Details_DataTableP.cshtml" />
+    <Content Include="Views\CR_Tracker\CR_Tracker_Dashboard.cshtml" />
+    <Content Include="Views\CR_Tracker\Common_Modals\CR_Tracker_Logs_Modal.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -120,7 +144,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="NewFolder1\" />
-    <Folder Include="Views\CR_Tracker\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

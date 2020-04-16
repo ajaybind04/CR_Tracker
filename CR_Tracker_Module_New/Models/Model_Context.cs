@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace CR_Tracker_Module.Models
+namespace CR_Tracker_Module_New.Models
 {
     public class Model_Context
     {

@@ -1,0 +1,94 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+
+<style>.cr-tracker-id {text-decoration: underline; cursor: pointer;  color: blueviolet; font-weight: bold; }</style>
+
+<table class="table m-0 table-bordered table-hover" id="example1">
+    <thead>
+        <tr>
+            <th>CR ID</th>
+            <th>CR Description</th>
+            <th title="Simple - (1-3 days), Medium - (4-8 days), Complex - (9-15 days), Projects - (15 - 60 days), Large Projects - (60 > days)">Complexity</th>
+            <th>Department</th>
+            <th>Category / System Name</th>
+            <th title="On schedule-From requirements upto go-live, basis project plan and timelines submitted (YES / NO)">Project Completed</th>
+            <th title="Input Yes for projects/CRs which can be termed as Importan projects/Milestones (YES / NO)">Key Projects</th>
+            <th title="First CR received date (DD-MMM-YY)">Project / CR Received Date</th>
+            <th title="Final/Confirned CR received date (DD-MMM-YY)">Final Project / CR Received Date</th>
+            <th title="Post signoff of original CR / or during UAT Count of CRs received  during WIP, post requirement signoff, or during UAT, post uat signoff">No. of CRs received</th>
+            <th title="First UAT delivery date (DD-MMM-YY)">UAT delivery date</th>
+            <th tilte="Date on which UAT was signed off including all rounds of testing (DD-MMM-YY)">UAT Signoff date</th>
+            <th tilte="Go live date">Project / CR Live Date</th>
+            <th>First Committed Live Dat</th>
+            <th tilte="(In Days) First Time CR Received Date - Go Live Date">TAT</th>
+            <th># of Showstoppers post go live</th>
+            <th>Unit Lead</th>
+            <th>Manager</th>
+            <th>Reason / RCA</th>
+            <th>Edit</th>
+            <th>Download</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Rows.Count > 0)
+        {
+            foreach (DataRow rows in Model.Rows)
+            {
+                <tr>
+                    <td><label class="cr-tracker-id" resource="@rows["CR_ID"]">@rows["CR_ID"]</label></td>
+                    <td>@rows["CrDescription"]</td>
+                    <td>@rows["ComplexityList"]</td>
+                    <td>@rows["DepartmentList"]</td>
+                    <td>@rows["CategoryList"]</td>
+                    <td>@rows["ProjectCompletedSchedule"]</td>
+                    <td>@rows["KeyProjects"]</td>
+                    <td>@rows["ProjectCRReceivedDate"]</td>
+                    <td>@rows["FinalProjectCRReceivedDate"]</td>
+                    <td>@rows["NoOfCRReceivedDuringUAT"]</td>
+                    <td>@rows["UATDeliveryDate"]</td>
+                    <td>@rows["UATSignoffDate"]</td>
+                    <td>@rows["ProjectCRLiveDate"]</td>
+                    <td>@rows["FirstCommittedLiveDate"]</td>
+                    <td>@rows["TAT"]</td>
+                    <td>@rows["NoOfShowstoppersPostGoLive"]</td>
+                    <td>@rows["UnitLead"]</td>
+                    <td>@rows["Manager"]</td>
+                    <td>@rows["ReasonRCA"]</td>
+                    <td><a href="#">Edit</a></td>
+                    <td><a href="#">Download</a></td>
+                    <td style="text-align:center;">@(!string.IsNullOrEmpty(rows["CR_Status"].ToString()) ? rows["CR_Status"] : "-" )</td>
+                </tr>
+            }
+        }
+        
+    </tbody>
+</table>
+
+
+<script>
+    var table = $("#example1").DataTable({
+        "processing" :true,
+        stateSave: true, //will store state information such as pagination position, display length, filtering and sorting & searching
+        dom: 'Blfrtip',
+        buttons: [{ extend: 'excelHtml5', title: 'Data export (Excel)' }], //{ extend: 'pdfHtml5', title: 'Data export (Pdf)' }, 'copy'
+        "responsive": true,
+        "autoWidth": false,
+        "scrollX": true,
+        "scrollY": "525px",
+        "order": [[0, "desc"]], //Default descending ordering (CR ID)
+        //2-Complexity, 3-Department, 7-Project/CR Received Date, 10-UAT delivery date, 11-UAT Signoff date, 
+        //12-Project / CR Live Date, 14-TAT, 15-# of Showstoppers post go live, 16-Unit Lead, 18-Reason/RCA, 
+        //19-Edit, 20-Download
+        "columnDefs": [{ "targets": [2, 3, 7, 10, 11, 12, 14, 15, 16, 18], "visible": false, "searchable": false }, { "targets": [19, 20], "orderable": false }],
+    });
+
+    $('#example1 tbody').on('click', 'tr', function () {
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+        } else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+    });
+</script>
