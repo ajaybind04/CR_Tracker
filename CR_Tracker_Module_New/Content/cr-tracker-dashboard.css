@@ -1,0 +1,262 @@
+﻿/*Main CR Tracker Dashboard CSS*/
+.content-header {
+    padding: 15px 0.5rem;
+}
+.content-header h1 {
+    font-size: 1.8rem;
+    margin: 0;
+}
+.text-dark {
+    color: #343a40!important;
+}
+.info-box {
+    box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.125), 0 1px 3px rgba(0, 0, 0, 0.2);
+    border-radius: 0.25rem;
+    background: #fff;
+    display: -ms-flexbox;
+    display: flex;
+    margin-bottom: 1rem;
+    min-height: 80px;
+    padding: 0.5rem;
+    position: relative;
+}
+.info-box .info-box-icon {
+    border-radius: 0.25rem;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -ms-flexbox;
+    display: flex;
+    font-size: 1.875rem;
+    -ms-flex-pack: center;
+    justify-content: center;
+    text-align: center;
+    width: 70px;
+}
+.bg-info, .bg-info > a {
+    color: #fff!important;
+}
+.bg-info {
+    background-color: #17a2b8!important;
+}
+.elevation-1 {
+    box-shadow: 0 0px 3px rgba(0, 0, 0, 012),0 1px 2px rgba(0, 0, 0, 0.24)!important;
+}
+.info-box .info-box-content {
+    -ms-flex: 1;
+    flex: 1;
+    padding: 5px 10px;
+}
+.info-box .info-box-text, .info-box .progress-description {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.info-box .info-box-number {
+    display: block;
+    font-weight: 700;
+}
+
+
+/*Card Style*/
+.card {
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.125), 0 1px 3px rgba(0, 0, 0, 0.2);
+    margin-bottom: 1rem;
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+}
+.card-title {
+    float: left;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0;
+}
+.card-header > .card-tools {
+    float: right;
+    margin-right: -0.625rem;
+}
+.card > .overlay, .card > .loading-img, .overlay-wrapper > .overlay, .overlay-wrapper > .loading-img, .info-box > .overlay, .info-box > .loading-img,.small-box > .overlay,.small-box > .loading-img {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.card .overlay, .overlay-wrapper .overlay, .info-box .overlay, .small-box .overlay {
+  border-radius: 0.25rem;
+  -ms-flex-align: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  z-index: 50;
+}
+.card .overlay > .fa,
+.card .overlay > .fas,
+.card .overlay > .far,
+.card .overlay > .fab,
+.card .overlay > .glyphicon,
+.card .overlay > .ion,
+.overlay-wrapper .overlay > .fa,
+.overlay-wrapper .overlay > .fas,
+.overlay-wrapper .overlay > .far,
+.overlay-wrapper .overlay > .fab,
+.overlay-wrapper .overlay > .glyphicon,
+.overlay-wrapper .overlay > .ion,
+.info-box .overlay > .fa,
+.info-box .overlay > .fas,
+.info-box .overlay > .far,
+.info-box .overlay > .fab,
+.info-box .overlay > .glyphicon,
+.info-box .overlay > .ion,
+.small-box .overlay > .fa,
+.small-box .overlay > .fas,
+.small-box .overlay > .far,
+.small-box .overlay > .fab,
+.small-box .overlay > .glyphicon,
+.small-box .overlay > .ion {
+  color: #343a40;
+}
+
+.card .overlay.dark,
+.overlay-wrapper .overlay.dark,
+.info-box .overlay.dark,
+.small-box .overlay.dark {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.card .overlay.dark > .fa,
+.card .overlay.dark > .fas,
+.card .overlay.dark > .far,
+.card .overlay.dark > .fab,
+.card .overlay.dark > .glyphicon,
+.card .overlay.dark > .ion,
+.overlay-wrapper .overlay.dark > .fa,
+.overlay-wrapper .overlay.dark > .fas,
+.overlay-wrapper .overlay.dark > .far,
+.overlay-wrapper .overlay.dark > .fab,
+.overlay-wrapper .overlay.dark > .glyphicon,
+.overlay-wrapper .overlay.dark > .ion,
+.info-box .overlay.dark > .fa,
+.info-box .overlay.dark > .fas,
+.info-box .overlay.dark > .far,
+.info-box .overlay.dark > .fab,
+.info-box .overlay.dark > .glyphicon,
+.info-box .overlay.dark > .ion,
+.small-box .overlay.dark > .fa,
+.small-box .overlay.dark > .fas,
+.small-box .overlay.dark > .far,
+.small-box .overlay.dark > .fab,
+.small-box .overlay.dark > .glyphicon,
+.small-box .overlay.dark > .ion {
+  color: #ced4da;
+}
+
+.btn-tool {
+    background: 0 0;
+    color: #adb5bd;
+    font-size: 0.875rem;
+    margin: -0.75rem 0;
+    padding: 0.25rem 0.5rem;
+}
+
+/*Timeline Style*/
+.timeline {
+    margin: 0 0 45px;
+    padding: 0;
+    position: relative;
+}
+.timeline::before {
+    border-radius: 0.25rem;
+    background: #dee2e6;
+    bottom: 0;
+    content: '';
+    left: 31px;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    width: 4px;
+}
+.bg-red, .bg-red > a {
+    color: #fff!important;
+}
+.bg-green, .bg-green > a {
+    color: #fff!important;
+}
+.bg-red {
+    background-color: #dc3545!important;
+}
+.bg-green {
+    background-color: #28a745!important;
+}
+.timeline > div {
+    margin-bottom: 15px;
+    margin-right: 10px;
+    position: relative;
+}
+.timeline > .time-label > span {
+    border-radius: 4px;
+    background-color: #fff;
+    display: inline-block;
+    font-weight: 600;
+    padding: 5px;
+}
+.timeline > div > .timeline-item {
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.125), 0 1px 5px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 0.25rem;
+    background: #fff;
+    color: #495057;
+    margin-left: 60px;
+    margin-right: 15px;
+    margin-top: 0;
+    padding: 0;
+    position: relative;
+}
+.timeline > div > .timeline-item > .time {
+    color: #999;
+    float: right;
+    font-size: 12px;
+    padding: 10px;
+}
+.timeline > div > .timeline-item > .timeline-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    color: #495057;
+    font-size: 16px;
+    line-height: 1.1;
+    margin: 0;
+    padding: 10px;
+}
+.timeline > div > .timeline-item > .timeline-header > a {
+    font-weight: 600;
+}
+.timeline > div > .timeline-item > .timeline-body, .timeline > div > .timeline-item > .timeline-footer {
+    padding: 10px;
+}
+
+/*Datatable Additional CSS Style*/
+.dt-buttons, .btn-group{
+  float: left;
+  margin: -3px 15px 0 5px;
+}
+#example1_length, #example1_info {
+float: left;
+}
+.selected {
+  background-color: #c6c9ce;
+}
+
+#chartdiv1, #chartdiv2 {
+  width: 100%;
+  height: 410px;
+}
