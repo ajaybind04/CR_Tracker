@@ -218,15 +218,16 @@ $(document).on('click', '.cr-tracker-id', function () {
 })
 
 $(document).on('click', '.cr-count-dashboard', function () {
-    $('.cr-count-dashboard').removeClass('selected-card-color');
-    $(this).addClass('selected-card-color');
+    //$('.cr-count-dashboard').removeClass('selected-card-color');
+    //$(this).addClass('selected-card-color');
     var text = $.trim($(this).find('.info-box-text').text());
     Get_CR_Tracker_Table_Details_By_Filter(text);
 })
 
 
-
 function Get_CR_Tracker_Table_Details_By_Filter(clicked_status) {
+    $('.cr-count-dashboard').removeClass('selected-card-color');
+    $.trim(clicked_status).toLowerCase() != "all cr module" && $.trim(clicked_status).toLowerCase() != "new" ? $('.cr-' + clicked_status.toLowerCase() + '-clicked').addClass('selected-card-color') : $('.cr-all-cr-module-clicked').addClass('selected-card-color');
     $.ajax({
         url: "/CR_Tracker/CR_Details_DataTableP",
         type: "POST",
