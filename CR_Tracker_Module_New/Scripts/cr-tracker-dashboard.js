@@ -1,61 +1,137 @@
 ﻿//------------------Pie Chart------------------------
-am4core.ready(function () {
+//am4core.ready(function () {
 
-    // Themes begin
-    am4core.useTheme(am4themes_animated);
-    // Themes end
+//    // Themes begin
+//    am4core.useTheme(am4themes_animated);
+//    // Themes end
 
-    var chart1 = am4core.create("chartdiv1", am4charts.PieChart3D);
-    chart1.hiddenState.properties.opacity = 0; // this creates initial fade-in
+//    var chart1 = am4core.create("chartdiv1", am4charts.PieChart3D);
+//    chart1.hiddenState.properties.opacity = 0; // this creates initial fade-in
 
-    chart1.data = [
-      {
-          country: "New",
-          litres: 165.8
-      },
-      {
-          country: "UAT",
-          litres: 139.9
-      },
-      {
-          country: "Completed",
-          litres: 128.3
-      },
-      {
-          country: "Working",
-          litres: 120
-      }
+//    chart1.data = [
+//      {
+//          country: "New",
+//          litres: 165.8
+//      },
+//      {
+//          country: "UAT",
+//          litres: 139.9
+//      },
+//      {
+//          country: "Completed",
+//          litres: 128.3
+//      },
+//      {
+//          country: "Working",
+//          litres: 120
+//      }
 
-    ];
+//    ];
 
-    chart1.innerRadius = am4core.percent(40);
-    chart1.depth = 120;
+//    chart1.innerRadius = am4core.percent(40);
+//    chart1.depth = 120;
 
-    chart1.legend = new am4charts.Legend();
+//    chart1.legend = new am4charts.Legend();
 
-    var series = chart1.series.push(new am4charts.PieSeries3D());
-    series.dataFields.value = "litres";
-    series.dataFields.depthValue = "litres";
-    series.dataFields.category = "country";
-    series.slices.template.cornerRadius = 6;
-    series.colors.step = 16;
+//    var series = chart1.series.push(new am4charts.PieSeries3D());
+//    series.dataFields.value = "litres";
+//    series.dataFields.depthValue = "litres";
+//    series.dataFields.category = "country";
+//    series.slices.template.cornerRadius = 6;
+//    series.colors.step = 16;
     
-    series.slices.template.cursorOverStyle = am4core.MouseCursorStyle.pointer;
-    series.slices.template.events.on("hit", (event) => {
-        var clickedStatus = $.trim(event.target.dataItem._dataContext.country);
-        Get_CR_Tracker_Table_Details_By_Filter(clickedStatus);
-        alert(clickedStatus);
-        //Pie_Chart_Click_Event_Common(event)
-        //console.log(event.target.dataItem._dataContext);
-    });
+//    series.slices.template.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+//    series.slices.template.events.on("hit", (event) => {
+//        var clickedStatus = $.trim(event.target.dataItem._dataContext.country);
+//        Get_CR_Tracker_Table_Details_By_Filter(clickedStatus);
+//        alert(clickedStatus);
+//        //Pie_Chart_Click_Event_Common(event)
+//        //console.log(event.target.dataItem._dataContext);
+//    });
 
 
-    //function Pie_Chart_Click_Event_Common(event) {
-    //    console.log(event.target.dataItem._dataContext.country);
-    //    console.log(event.target.dataItem._dataContext.litres);
-    //}
+//    //function Pie_Chart_Click_Event_Common(event) {
+//    //    console.log(event.target.dataItem._dataContext.country);
+//    //    console.log(event.target.dataItem._dataContext.litres);
+//    //}
    
-});
+//});
+
+//document ready
+$(document).ready(function () {
+    CharHelper.LoadPieChart();
+})
+
+
+var ChartManager = {
+    Get_Chart_Data: function () {
+        var obj = "";
+        var jsonParam = "";
+        var serviceUrl = "/CR_Tracker/CR_Pie_Chart_Details";
+        ChartManager.GetJsonResult(serviceUrl, jsonParam, false, false, onSuccess, onFailed);
+
+        function onSuccess(jsonData) {
+            obj = jsonData;
+        }
+        function onFailed(error) {
+            alert(error.statusText);
+        }
+        return obj;
+    },
+
+    GetJsonResult: function (serviceUrl, jsonParams, isAsync, isCache, successCallback, errorCallback) {
+    $.ajax({
+        type: "GET",
+        async: isAsync,
+        cache: isCache,
+        url: serviceUrl,
+        data: jsonParams,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: successCallback,
+        error: errorCallback
+    });
+}
+};
+
+var CharHelper = {
+    LoadPieChart: function () {
+        var data = ChartManager.Get_Chart_Data();
+        am4core.ready(function () {
+            am4core.useTheme(am4themes_animated);
+            var chart1 = am4core.create("chartdiv1", am4charts.PieChart3D);
+            chart1.hiddenState.properties.opacity = 0; // this creates initial fade-in
+            chart1.data = data;
+
+            chart1.innerRadius = am4core.percent(40);
+            chart1.depth = 120;
+            chart1.legend = new am4charts.Legend();
+
+            var series = chart1.series.push(new am4charts.PieSeries3D());
+            series.dataFields.value = "CR_Status_Count";
+            series.dataFields.depthValue = "CR_Status_Count";
+            series.dataFields.category = "CR_Status";
+            series.slices.template.cornerRadius = 6;
+            series.colors.step = 16;
+
+            series.slices.template.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+            series.slices.template.events.on("hit", (event) => {
+                var clickedStatus = $.trim(event.target.dataItem._dataContext.CR_Status);
+                Get_CR_Tracker_Table_Details_By_Filter(clickedStatus);
+                //alert(clickedStatus);
+                //Pie_Chart_Click_Event_Common(event)
+                //console.log(event.target.dataItem._dataContext);
+            });
+
+            //function Pie_Chart_Click_Event_Common(event) {
+            //    console.log(event.target.dataItem._dataContext.country);
+            //    console.log(event.target.dataItem._dataContext.litres);
+            //}
+        });
+    }
+};
+
+
 
 //------------------Bar Chart------------------------
 am4core.ready(function () {
@@ -248,3 +324,6 @@ function Get_CR_Tracker_Table_Details_By_Filter(clicked_status) {
     })
 
 }
+
+
+

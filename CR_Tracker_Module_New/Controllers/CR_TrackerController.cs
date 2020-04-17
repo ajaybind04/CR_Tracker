@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -11,13 +12,44 @@ namespace CR_Tracker_Module_New.Controllers
 {
     public class CR_TrackerController : Controller
     {
+        #region Common Funtions
         public static string Get_Connection_String()
         {
             //Local
-            string connectionString = @"Data Source=admin-pc;Initial Catalog=db_cr_details;Integrated Security=true;";
+            string connectionString = @"Data Source=ADMIN-PC;Initial Catalog=db_cr_details;Integrated Security=true;";
             return connectionString;
         }
 
+        private static List<T> ConvertDataTable<T>(DataTable dt)
+        {
+            List<T> data = new List<T>();
+            foreach (DataRow row in dt.Rows)
+            {
+                T item = GetItem<T>(row);
+                data.Add(item);
+            }
+            return data;
+        }
+        private static T GetItem<T>(DataRow dr)
+        {
+            Type temp = typeof(T);
+            T obj = Activator.CreateInstance<T>();
+
+            foreach (DataColumn column in dr.Table.Columns)
+            {
+                foreach (PropertyInfo pro in temp.GetProperties())
+                {
+                    if (pro.Name == column.ColumnName)
+                        pro.SetValue(obj, dr[column.ColumnName], null);
+                    else
+                        continue;
+                }
+            }
+            return obj;
+        }
+
+        #endregion
+        
         // GET: CR_Tracker
         public ActionResult Index()
         {
@@ -41,7 +73,7 @@ namespace CR_Tracker_Module_New.Controllers
                     obj_cr_details.All_CR_Details_Count = cr_dt.Rows.Count;
                     obj_cr_details.CR_Working_Count = cr_dt.AsEnumerable().Where(a => !string.IsNullOrEmpty(a.Field<string>("CR_Status")) && a.Field<string>("CR_Status") == "Working").ToList().Count;
                     obj_cr_details.CR_Complete_Count = cr_dt.AsEnumerable().Where(a => !string.IsNullOrEmpty(a.Field<string>("CR_Status")) && a.Field<string>("CR_Status") == "Completed").ToList().Count;
-                    obj_cr_details.CR_UAT_Count = cr_dt.AsEnumerable().Where(a => !string.IsNullOrEmpty(a.Field<string>("CR_Status")) && a.Field<string>("CR_Status") == "UAT Done").ToList().Count;
+                    obj_cr_details.CR_UAT_Count = cr_dt.AsEnumerable().Where(a => !string.IsNullOrEmpty(a.Field<string>("CR_Status")) && a.Field<string>("CR_Status") == "UAT").ToList().Count;
                 }
                 return View(obj_cr_details);
             }
@@ -77,5 +109,25 @@ namespace CR_Tracker_Module_New.Controllers
             }
         }
 
+        public JsonResult CR_Pie_Chart_Details()
+        {
+            try
+            {
+                var CR_Details = new List<CR_Pie_Chart_Count>();
+                string str_select = "SELECT CR_Status, COUNT(*) AS CR_Status_Count FROM tbl_CR_Details GROUP BY CR_Status";
+                DataTable cr_dt = Shared.DbHelper.ExecuteTextQuerySql(Get_Connection_String(), str_select);
+                if (cr_dt!=null && cr_dt.Rows.Count > 0)
+                {
+                    CR_Details = ConvertDataTable<CR_Pie_Chart_Count>(cr_dt);
+                }
+                return Json(CR_Details, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { ok = false, message = ex.Message.ToString(), JsonRequestBehavior.AllowGet });
+            }
+        }
+
+       
     }
 }
