@@ -21,4 +21,14 @@ namespace CR_Tracker_Module_New.Models
         public string CR_Status { get; set; }
         public int CR_Status_Count { get; set; }
     }
+
+    public class CR_Stack_Bar_Count
+    {
+        public string CR_Months { get; set; }
+        public int Completed_Count { get; set; }
+        public int UAT_Count { get; set; }
+        public int Pending_Count { get; set; }
+        public int Other_Count { get; set; }
+    }
+
 }

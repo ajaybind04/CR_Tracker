@@ -50,7 +50,6 @@ namespace CR_Tracker_Module_New.Controllers
 
         #endregion
         
-        // GET: CR_Tracker
         public ActionResult Index()
         {
             return View();
@@ -128,6 +127,44 @@ namespace CR_Tracker_Module_New.Controllers
             }
         }
 
-       
+        public JsonResult CR_Stack_Bar_Details()
+        {
+            try
+            {
+                var CR_Details = new List<CR_Stack_Bar_Count>();
+                string str_select = "SELECT ProjectCRReceivedDate,CR_Status FROM tbl_CR_Details where(ProjectCRReceivedDate > dateadd(m, -6, getdate() - datepart(d, getdate()) + 1))";
+                DataTable cr_dt = Shared.DbHelper.ExecuteTextQuerySql(Get_Connection_String(), str_select);
+                if (cr_dt != null && cr_dt.Rows.Count > 0)
+                {
+                    //getting last 6 month records
+                    for (int i = 0; i < 6; i++)
+                    {
+                        var today = DateTime.Today.AddMonths(-i);
+                        DateTime first = new DateTime(today.Year, today.Month, 1);
+                        DateTime last = first.AddMonths(1).AddSeconds(-1);
+                        string FDay = first.ToString("dd-MMM-yy") + " 12:00:00 AM";      //getting first day of month
+                        string LDay = last.ToString("dd-MMM-yy") + " 12:00:00 AM";       //getting last day of month
+                        //finding records from FirstDay of month to LastDay of month 
+                        var cr_obj = cr_dt.AsEnumerable().AsEnumerable().Where(a => !DBNull.Value.Equals(a["ProjectCRReceivedDate"])
+                        && (Convert.ToDateTime(a["ProjectCRReceivedDate"]) >= Convert.ToDateTime(FDay))
+                        && (Convert.ToDateTime(a["ProjectCRReceivedDate"]) <= Convert.ToDateTime(LDay))).ToList();
+
+                        //adding month wise records into list
+                        var cr_count_obj = new CR_Stack_Bar_Count();
+                        cr_count_obj.CR_Months = today.ToString("MMM-yy");
+                        cr_count_obj.Completed_Count = cr_obj.Where(a => a.Field<string>("CR_Status") == "Completed").Count();
+                        cr_count_obj.UAT_Count= cr_obj.Where(a => a.Field<string>("CR_Status") == "UAT").Count();
+                        cr_count_obj.Pending_Count = cr_obj.Where(a => a.Field<string>("CR_Status") == "Pending").Count();
+                        cr_count_obj.Other_Count = cr_obj.Where(a => a.Field<string>("CR_Status") != "Completed" && a.Field<string>("CR_Status") != "UAT" && a.Field<string>("CR_Status") != "Pending").Count();
+                        CR_Details.Add(cr_count_obj);
+                    }
+                }
+                return Json(CR_Details, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message.ToString(), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
