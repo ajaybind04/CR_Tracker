@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
+using System.Text;
 
 namespace CR_Tracker_Module_New.Shared
 {
@@ -537,6 +538,34 @@ namespace CR_Tracker_Module_New.Shared
             return dt;
         }
 
+        public static bool Common_DDL_Query(string strConnectionString, string SqlQuery)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(strConnectionString) && !string.IsNullOrEmpty(SqlQuery))
+                {
+                    using (SqlConnection connection = new SqlConnection(strConnectionString))
+                    {
+                        StringBuilder sqlQuery = new StringBuilder(SqlQuery);
+                        SqlCommand command = new SqlCommand();
+                        command.CommandTimeout = 500;
+                        command.CommandText = sqlQuery.ToString();
+                        command.Connection = connection;
+                        command.CommandType = System.Data.CommandType.Text;
+                        if (connection.State == ConnectionState.Closed)
+                        { connection.Open(); }
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch
+            {
+                throw;
+            }
+        }
         #endregion
 
     }

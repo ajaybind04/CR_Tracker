@@ -89,6 +89,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\tbl_CR_Details Table Script.sql" />
+    <Content Include="App_Data\tbl_cr_remark_details.sql" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\buttons.bootstrap4.min.css" />
     <Content Include="Content\cr-tracker-dashboard.css" />
@@ -134,6 +136,7 @@
     <Content Include="Views\CR_Tracker\CR_Details_DataTableP.cshtml" />
     <Content Include="Views\CR_Tracker\CR_Tracker_Dashboard.cshtml" />
     <Content Include="Views\CR_Tracker\Common_Modals\CR_Tracker_Logs_Modal.cshtml" />
+    <Content Include="Views\CR_Tracker\CR_Remark_DetailsP.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -141,10 +144,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

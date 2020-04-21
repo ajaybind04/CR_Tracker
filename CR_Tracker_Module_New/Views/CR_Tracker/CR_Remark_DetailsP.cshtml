@@ -1,0 +1,55 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+
+
+<div class="timeline">
+    @if (Model != null && Model.Rows.Count > 0)
+    {
+        var CR_Date_List = Model.AsEnumerable().GroupBy(a => new { Year = a.Field<DateTime>("CR_Remark_Saved_Date").Year, Month = a.Field<DateTime>("CR_Remark_Saved_Date").Month, Day = a.Field<DateTime>("CR_Remark_Saved_Date").Day }).Select(a => new { Date = new DateTime(a.Key.Year, a.Key.Month, a.Key.Day) }).OrderByDescending(a => a.Date);
+        foreach (var UniqueDt in CR_Date_List)
+        {
+            <div class="time-label"><span class="bg-red">@UniqueDt.Date.ToString("dd-MMM-yyyy")</span></div>
+            DateTime Fdate = UniqueDt.Date;
+            DateTime Sdate = UniqueDt.Date.AddDays(1);
+
+            var get_remarks = Model.AsEnumerable().Where(a => (Convert.ToDateTime(a["CR_Remark_Saved_Date"]) >= Fdate && (Convert.ToDateTime(a["CR_Remark_Saved_Date"]) <= Convert.ToDateTime(Sdate)))).OrderByDescending(a => a.Field<DateTime>("CR_Remark_Saved_Date")).ToList();
+            if (get_remarks != null && get_remarks.Count > 0)
+            {
+                foreach (var cr_remark_obj in get_remarks)
+                {
+                    <div>
+                        <i class="fas fa-comments cr-remark-icon" style="width: 30px;color:coral;"></i>
+                        <div class="timeline-item">
+                            <span class="time"><i class="fas fa-clock"></i>  @cr_remark_obj["CR_Remark_Saved_Date"].ToString()</span>
+                            <h3 class="timeline-header">
+                                <label style="color: blueviolet; margin-right:10px;">@cr_remark_obj["CR_Remark_Saved_By"].ToString()</label> | 
+                                <button class="btn btn-edit-remark" resource="@cr_remark_obj["CR_Remark_ID"]"><i class="far fa-edit"></i> EDIT</button>
+                                @if (!string.IsNullOrEmpty(cr_remark_obj["CR_Remark_Updated_Date"].ToString()))
+                                {
+                                     <label class="modified-remark-time"><i class="fas fa-clock"></i> Last Modified :  @cr_remark_obj["CR_Remark_Updated_Date"].ToString()</label>
+                                }
+                            </h3>
+                            <div class="timeline-body"> @cr_remark_obj["CR_Remark"]</div>
+                        </div>
+                    </div>
+                }
+            }
+
+        }
+    }
+    else
+    {
+        <div>
+            <i class="fas fa-clock cr-remark-icon" style="width: 30px;margin-top:10px;color:dimgrey;"></i>
+            <div class="timeline-item" style="margin-top: 20px;">
+                <div class="timeline-body">
+                    No Records Found !!
+                </div>
+            </div>
+        </div>
+    }
+
+
+
+
+</div>

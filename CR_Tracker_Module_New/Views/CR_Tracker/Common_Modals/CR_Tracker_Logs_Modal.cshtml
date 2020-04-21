@@ -3,91 +3,43 @@
 </style>
 
 <div class="modal fade" id="cr_status_details">
+    <input type="hidden" id="txt_hidden_cr_remark_id" />
+    <input type="hidden" id="txt_hidden_cr_id" />
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">CR Tracker Follow-Up | Status | Remark</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <div class="ml-auto">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm" id="btn_add_cr_remark" > <i class="far fa-comment-alt"></i> Add Remark</button>
+                </div>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-12">
-                        <!-- The time line -->
-                        <div class="timeline">
-                            <!-- timeline time label -->
-                            <div class="time-label">
-                                <span class="bg-red">10-Mar-2020</span>
-                            </div>
-                            <!-- /.timeline-label -->
-                            <!-- timeline item -->
-                            <div>
-                                <i class="fas fa-envelope cr-remark-icon" style="width: 30px;color:blueviolet;"></i>
-                                <div class="timeline-item">
-                                    <span class="time"><i class="fas fa-clock"></i> 12:05</span>
-                                    <h3 class="timeline-header"><a href="#">Admin Team</a> sent UAT email</h3>
-                                    <div class="timeline-body">
-                                        New page added for multiple file upload to CRM.
-                                        New Link shared on mail kindly refer for process your pending work.
-                                        This CR get auto closed.
-                                        Regards Admin Team.
-                                    </div>
-
-                                </div>
-                            </div>
-                            <!-- END timeline item -->
-                            <!-- timeline item -->
-                            <div>
-                                <i class="fas fa-comments cr-remark-icon" style="width: 30px;color:coral;"></i>
-                                <div class="timeline-item">
-                                    <span class="time"><i class="fas fa-clock"></i> 5 mins ago</span>
-                                    <h3 class="timeline-header no-border"><a href="#">Sarah Young</a> Multiple file upload on "Insurance Report" page done.</h3>
-                                </div>
-                            </div>
-                            <!-- END timeline item -->
-                            <!-- timeline item -->
-                            <div>
-                                <i class="fas fa-comments cr-remark-icon" style="width: 30px;color:coral;"></i>
-                                <div class="timeline-item">
-                                    <span class="time"><i class="fas fa-clock"></i> 27 mins ago</span>
-                                    <h3 class="timeline-header"><a href="#">Jay White</a> CR Details Assigned to Ajay.Bind@hdfcergo.com</h3>
-                                    <div class="timeline-body">
-                                        This CR Assigned to AjayBind.hdfcergo.com on 08-Apr-2020.
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END timeline item -->
-                            <!-- timeline time label -->
-                            <div class="time-label">
-                                <span class="bg-green">03-Jan-2020</span>
-                            </div>
-                            <!-- /.timeline-label -->
-                            <!-- timeline item -->
-                            <div>
-                                <i class="fas fa-comments cr-remark-icon" style="width: 30px;color:coral;"></i>
-                                <div class="timeline-item">
-                                    <span class="time"><i class="fas fa-clock"></i> 2 days ago</span>
-                                    <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
-                                    <div class="timeline-body">
-                                        New CR Raised by User kindly assign to admin team.
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END timeline item -->
-                            <!-- timeline item -->
-                            <!-- END timeline item -->
-                            <div>
-                                <i class="fas fa-clock cr-remark-icon" style="width: 30px;margin-top:-10px;color:dimgrey;"></i>
-                            </div>
+                    <div class="txt-message-reply" style="display:none;">
+                        <!--Here we are Message to Person (lbl_Message_To) using Jquery-->
+                        <h6><b>CR Tracker ID : </b><label id="lbl_Message_To"></label> <span class="close-reply">&times;</span> </h6>
+                        <textarea rows="4"  id="txt_cr_remark_details"></textarea>
+                        <input type="submit" value="SAVE" id="btn_save_cr_remark_details" />
+                    </div>
+                </div>
+                <div class="row">
+                    <!--Load TimeLine Details Using Ajax (CR_Remark_DetailsP)-->
+                    <div class="col-md-12" style="height: 450px; overflow: auto;">
+                        <div class="overlay timeline-overlay" style="height: 100%;left: 0;position: absolute;top: 0; width: 100%;border-radius: 0.25rem; -ms-flex-align: center; align-items: center; background: rgba(255, 255, 255, 0.7); display: -ms-flexbox;  display: flex;  -ms-flex-pack: center;  justify-content: center;  z-index: 50;">
+                            <i class="fas fa-2x fa-sync-alt fa-spin" style="font-size: 60px;"></i>
                         </div>
+                        <idv id="cr_remark_timeline_details"></idv>
+                        <!-- The time line -->
+
                     </div>
                     <!-- /.col -->
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
         <!-- /.modal-content -->

@@ -75,7 +75,7 @@ var ChartHelper = {
 };
 
 
-//----------------------Bar Chart--------------------------
+//--------------------------Bar Chart--------------------------
 $(document).ready(function () {
     StackBarHelper.LoadBarGraph();
 })
@@ -274,12 +274,7 @@ var StackBarHelper = {
 //-----------------------------------------------------------------------
 
 
-//----------------------------------------------------------
-$(document).on('click', '.cr-tracker-id', function () {
-    var cr_tracker_id = $.trim($(this).attr('resource'));
-    $('#cr_status_details').modal('show');
-    //alert(cr_tracker_id);
-})
+//------------------------Main Dashboard-----------------------------------
 
 $(document).on('click', '.cr-count-dashboard', function () {
     //$('.cr-count-dashboard').removeClass('selected-card-color');
@@ -312,6 +307,131 @@ function Get_CR_Tracker_Table_Details_By_Filter(clicked_status) {
     })
 
 }
+
+
+//---------------------------CR Remark--------------------------------
+$(document).on('click', '.cr-tracker-id', function () {
+    var cr_tracker_id = $.trim($(this).attr('resource'));
+    $('#txt_hidden_cr_id').val(cr_tracker_id);
+    $('#lbl_Message_To').text(cr_tracker_id);
+    $('#txt_cr_remark_details').val('');
+    $('.txt-message-reply').slideUp();
+    $('#cr_status_details').modal('show');
+    Get_CR_Remark_Details_Function(cr_tracker_id);
+    //alert(cr_tracker_id);
+})
+
+$(document).on('click', '#btn_add_cr_remark', function () {
+    $('#txt_cr_remark_details').val('');
+    $('#btn_save_cr_remark_details').val('SAVE');
+    $('.txt-message-reply').slideDown();
+})
+
+$(document).on('click', '.close-reply', function () {
+    $('.txt-message-reply').slideUp();
+})
+
+$(document).on('click', '#btn_save_cr_remark_details', function () {
+    var txt_cr_remark_details = $.trim($('#txt_cr_remark_details').val());
+    var btn_action = "SAVE";
+    if ($.trim($(this).val()) == "UPDATE") {
+        btn_action = "UPDATE";
+    }
+    var txt_hidden_cr_id = $.trim($('#txt_hidden_cr_id').val());
+    var txt_hidden_cr_remark_id = $.trim($('#txt_hidden_cr_remark_id').val());
+
+    if (txt_cr_remark_details == "") {
+        alert("Please Enter CR Remark Details !!");
+        $('#txt_cr_remark_details').focus();
+        return false;
+    }
+    
+    var data_obj = {
+        add_update_action: $.trim(btn_action),
+        cr_remark_id: $.trim(txt_hidden_cr_remark_id),
+        ref_cr_id: $.trim(txt_hidden_cr_id),
+        cr_remark: $.trim(txt_cr_remark_details),
+    }
+    console.log(data_obj);
+
+    $.ajax({
+        url: '/CR_Tracker/Add_Update_CR_Remark_Details',
+        type: 'POST',
+        datatype: 'application/json',
+        contentType: 'application/json',
+        data: JSON.stringify(data_obj),
+        async: true,
+        beforeSend: function () {
+            //loading
+        },
+        complete: function () {
+            //loading
+            Get_CR_Remark_Details_Function(txt_hidden_cr_id);
+        },
+        success: function (result) {
+            $('#txt_cr_remark_details').val('');
+            $('.txt-message-reply').slideUp();
+            //
+        }
+    });
+
+})
+
+function Get_CR_Remark_Details_Function(refCR_ID) {
+
+    $.ajax({
+        url: '/CR_Tracker/CR_Remark_DetailsP',
+        type: 'POST',
+        datatype: 'application/json',
+        contentType: 'application/json',
+        data: JSON.stringify({ ref_cr_id: $.trim(refCR_ID) }),
+        async: true,
+        beforeSend: function () {
+            $('.timeline-overlay').show();
+            $('#cr_remark_timeline_details').html('');
+        },
+        complete: function () {
+            //loading
+            $('.timeline-overlay').hide();
+        },
+        success: function (result) {
+            $('#cr_remark_timeline_details').html(result);
+        }
+    });
+
+}
+
+$(document).on('click', '.btn-edit-remark', function () {
+    var cr_remark_id = $.trim($(this).attr('resource'));
+    $('#txt_hidden_cr_remark_id').val(cr_remark_id);
+    $('#btn_save_cr_remark_details').val('UPDATE');
+    $('.txt-message-reply').slideDown();
+    var txt_hidden_cr_id = $.trim($('#txt_hidden_cr_id').val());
+
+     $.ajax({
+        url: '/CR_Tracker/Edit_CR_Remark_Detail_By_ID',
+        type: 'POST',
+        datatype: 'application/json',
+        contentType: 'application/json',
+        data: JSON.stringify({ cr_remark_id: $.trim(cr_remark_id) }),
+        async: true,
+        beforeSend: function () {
+            //loading
+        },
+        complete: function () {
+        },
+        success: function (result) {
+            $('#txt_cr_remark_details').val($.trim(result.data));
+            $('.txt-message-reply').slideDown();
+        }
+    });
+
+
+
+
+})
+
+
 
 
 
