@@ -105,7 +105,7 @@
     <Content Include="Scripts\buttons.bootstrap4.min.js" />
     <Content Include="Scripts\buttons.html5.min.js" />
     <Content Include="Scripts\Chart.min.js" />
-    <Content Include="Scripts\cr-tracker-dashboard.js" />
+    <Content Include="cr-tracker-js\cr-tracker-dashboard.js" />
     <Content Include="Scripts\dataTables.bootstrap4.min.js" />
     <Content Include="Scripts\dataTables.buttons.min.js" />
     <Content Include="Scripts\font-awsome.js" />

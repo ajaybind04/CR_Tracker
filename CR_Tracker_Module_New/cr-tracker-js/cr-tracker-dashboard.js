@@ -60,7 +60,7 @@ var ChartHelper = {
             series.slices.template.cursorOverStyle = am4core.MouseCursorStyle.pointer;
             series.slices.template.events.on("hit", (event) => {
                 var clickedStatus = $.trim(event.target.dataItem._dataContext.CR_Status);
-                Get_CR_Tracker_Table_Details_By_Filter(clickedStatus);
+                Get_CR_Tracker_Table_Details_By_Filter(clickedStatus, "");
                 //alert(clickedStatus);
                 //Pie_Chart_Click_Event_Common(event)
                 //console.log(event.target.dataItem._dataContext);
@@ -264,7 +264,9 @@ var StackBarHelper = {
             chart.scrollbarX = new am4core.Scrollbar();
 
             function Stack_Bar_Click_Event_Common(ev, status) {
-                alert("Clicked on " + ev.target.dataItem.categoryX + ": " + ev.target.dataItem.valueY + " Status: " + status);
+                //alert("Clicked on " + ev.target.dataItem.categoryX + ": " + ev.target.dataItem.valueY + " Status: " + status);
+                var monthYear =ev.target.dataItem.categoryX;
+                Get_CR_Tracker_Table_Details_By_Filter($.trim(status), $.trim(monthYear))
             }
         });
 
@@ -272,7 +274,24 @@ var StackBarHelper = {
 }
 
 //-----------------------------------------------------------------------
-
+//Function
+var _months = {
+    "Jan": "01",
+    "Feb": "02",
+    "Mar": "03",
+    "Apr": "04",
+    "May": "05",
+    "Jun": "06",
+    "Jul": "07",
+    "Aug": "08",
+    "Sep": "09",
+    "Oct": "10",
+    "Nov": "11",
+    "Dec": "12"
+};
+function getMonthObject(month) {
+    return _months[month];
+}
 
 //------------------------Main Dashboard-----------------------------------
 
@@ -280,11 +299,22 @@ $(document).on('click', '.cr-count-dashboard', function () {
     //$('.cr-count-dashboard').removeClass('selected-card-color');
     //$(this).addClass('selected-card-color');
     var text = $.trim($(this).find('.info-box-text').text());
-    Get_CR_Tracker_Table_Details_By_Filter(text);
+    Get_CR_Tracker_Table_Details_By_Filter(text, "");
 })
 
+$(document).on('click', '.btn-clear-status-filter', function () {
+    Get_CR_Tracker_Table_Details_By_Filter("All CR Module", "");
+})
 
-function Get_CR_Tracker_Table_Details_By_Filter(clicked_status) {
+function Get_CR_Tracker_Table_Details_By_Filter(clicked_status, MonthClicked) {
+    $('#lbl_cr_details_alert_msg').text(clicked_status);
+    if ($.trim(MonthClicked) != "") {
+        $('#lbl_cr_details_alert_msg').text(clicked_status + " Of " + MonthClicked);
+        var month = MonthClicked.split('-')[0]; //getting month name
+        var year = MonthClicked.split('-')[1]; //getting year
+        MonthClicked = getMonthObject(month) + "-20" + year; // convert to 12-2020 date formate
+    }
+    clicked_status != "All CR Module" ? $('.cr-details-alert-message').show() : $('.cr-details-alert-message').hide();
     $('.cr-count-dashboard').removeClass('selected-card-color');
     $.trim(clicked_status).toLowerCase() != "all cr module" && $.trim(clicked_status).toLowerCase() != "new" ? $('.cr-' + clicked_status.toLowerCase() + '-clicked').addClass('selected-card-color') : $('.cr-all-cr-module-clicked').addClass('selected-card-color');
     $.ajax({
@@ -292,7 +322,7 @@ function Get_CR_Tracker_Table_Details_By_Filter(clicked_status) {
         type: "POST",
         contentType: "application/json",
         datatype: "application/json",
-        data: JSON.stringify({ status: $.trim(clicked_status) }),
+        data: JSON.stringify({ status: $.trim(clicked_status), MonthWiseStatus: $.trim(MonthClicked) }),
         async: true,
         beforeSend: function () {
             //$('#cr_detailsP').html('');
@@ -345,7 +375,7 @@ $(document).on('click', '#btn_save_cr_remark_details', function () {
         $('#txt_cr_remark_details').focus();
         return false;
     }
-    
+
     var data_obj = {
         add_update_action: $.trim(btn_action),
         cr_remark_id: $.trim(txt_hidden_cr_remark_id),
@@ -408,7 +438,7 @@ $(document).on('click', '.btn-edit-remark', function () {
     $('.txt-message-reply').slideDown();
     var txt_hidden_cr_id = $.trim($('#txt_hidden_cr_id').val());
 
-     $.ajax({
+    $.ajax({
         url: '/CR_Tracker/Edit_CR_Remark_Detail_By_ID',
         type: 'POST',
         datatype: 'application/json',

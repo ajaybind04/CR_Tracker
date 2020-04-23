@@ -83,10 +83,16 @@ namespace CR_Tracker_Module_New.Controllers
             }
         }
 
-        public ActionResult CR_Details_DataTableP(string status)
+        public ActionResult CR_Details_DataTableP(string status, string MonthWiseStatus)
         {
             try
             {
+                string dateFilter = string.Empty;
+                if (!string.IsNullOrEmpty(MonthWiseStatus))
+                {
+                    var MonthYear = MonthWiseStatus.Split('-');
+                    dateFilter = "AND ( MONTH(ProjectCRReceivedDate) = " + MonthYear[0] + " AND YEAR(ProjectCRReceivedDate) = " + MonthYear[1] + " ) ";
+                }
                 StringBuilder str_select = new StringBuilder();
                 //Normal Condition
                 str_select.Append("SELECT * FROM tbl_CR_Details ");
@@ -96,6 +102,9 @@ namespace CR_Tracker_Module_New.Controllers
                 { str_select.Append("WHERE CR_Status = 'Completed' "); }
                 else if (status == "UAT")
                 { str_select.Append("WHERE CR_Status = 'UAT' "); }
+                //check condition for Month Year Filter
+                if (!string.IsNullOrEmpty(dateFilter))
+                { str_select.Append(dateFilter); }
                 //Applying Order By On CR_ID
                 str_select.Append("ORDER BY CR_ID DESC");
                 DataTable cr_dt = Shared.DbHelper.ExecuteTextQuerySql(Get_Connection_String(), str_select.ToString());

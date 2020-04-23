@@ -154,10 +154,10 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body p-0">
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="background-color: #d2f783; margin-top: 5px;">
-                            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
+                        <div class="alert alert-warning alert-dismissible fade show cr-details-alert-message" style="background-color: #d2f783; margin-top: 5px; display:none;">
+                            Showing the records of "<strong id="lbl_cr_details_alert_msg"></strong>" status.
+                            <button type="button" class="close btn-clear-status-filter" >
+                                <span aria-hidden="true" title="Remove Filter !">×</span>
                             </button>
                         </div>
                         <div class="table-responsive" style="padding-top: 18px;padding-bottom: 6px;" id="cr_detailsP">
@@ -179,4 +179,4 @@
     @{ Html.RenderPartial("~/Views/CR_Tracker/Common_Modals/CR_Tracker_Logs_Modal.cshtml"); }
 </body>
 </html>
-<script src="~/Scripts/cr-tracker-dashboard.js"></script>
+<script src="~/cr-tracker-js/cr-tracker-dashboard.js"></script>
