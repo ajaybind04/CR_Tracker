@@ -89,6 +89,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Stored Procedure\sp_Add_Update_CR_Remarks_Details.sql" />
+    <Content Include="App_Data\Stored Procedure\sp_Get_CR_Remarks_Details_For_Select_Edit.sql" />
+    <Content Include="App_Data\Stored Procedure\sp_Get_CR_Tracker_Details.sql" />
+    <Content Include="App_Data\Stored Procedure\sp_Get_Pie_Chart_CR_Details.sql" />
+    <Content Include="App_Data\Stored Procedure\sp_Get_Six_Month_Chart_CR_Details.sql" />
     <Content Include="App_Data\tbl_CR_Details Table Script.sql" />
     <Content Include="App_Data\tbl_cr_remark_details.sql" />
     <Content Include="Content\bootstrap.min.css" />

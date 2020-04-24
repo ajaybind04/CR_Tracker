@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -49,7 +50,7 @@ namespace CR_Tracker_Module_New.Controllers
         }
 
         #endregion
-        
+
         public ActionResult Index()
         {
             return View();
@@ -58,15 +59,12 @@ namespace CR_Tracker_Module_New.Controllers
         public ActionResult CR_Tracker_Dashboard()
         {
             var obj_cr_details = new CR_Tracker_Details();
-            //obj_cr_details.All_CR_Details_Count = 0;
-            //obj_cr_details.CR_Working_Count = 0;
-            //obj_cr_details.CR_Complete_Count = 0;
-            //obj_cr_details.CR_UAT_Count = 0;
             try
             {
-                string str_select = "SELECT * FROM tbl_CR_Details ORDER BY Created DESC";
-                DataTable cr_dt = Shared.DbHelper.ExecuteTextQuerySql(Get_Connection_String(), str_select);
-
+                StringBuilder whereCondition = new StringBuilder();
+                //whereCondition.Append("Manager = 'Pravat Sharma'");  // You Can Where condtion (Like CR Created By)
+                SqlParameter param = new SqlParameter(parameterName: "@WhereQuery", value: string.IsNullOrEmpty(whereCondition.ToString()) ? Convert.DBNull : whereCondition.ToString());
+                DataTable cr_dt = Shared.DbHelper.GetDataTableWithParameterArraySql(Get_Connection_String(), "sp_Get_CR_Tracker_Details", param);
                 if (cr_dt.Rows.Count > 0)
                 {
                     obj_cr_details.All_CR_Details_Count = cr_dt.Rows.Count;
@@ -87,27 +85,24 @@ namespace CR_Tracker_Module_New.Controllers
         {
             try
             {
-                string dateFilter = string.Empty;
+                StringBuilder whereCondition = new StringBuilder();
+                //whereCondition.Append("Manager = 'Pravat Sharma'"); // You Can Where condtion (Like CR Created By)
+                //1.check condtion for status (For Dashbaord & Pie Chart Clicked Event)
+                if (status == "Working")
+                { whereCondition.Append("CR_Status = 'Working' "); }
+                else if (status == "Completed")
+                { whereCondition.Append("CR_Status = 'Completed' "); }
+                else if (status == "UAT")
+                { whereCondition.Append("CR_Status = 'UAT' "); }
+
+                //2.check condition for Month Year Filter (For Stack Bar graph Clicked Event)
                 if (!string.IsNullOrEmpty(MonthWiseStatus))
                 {
                     var MonthYear = MonthWiseStatus.Split('-');
-                    dateFilter = "AND ( MONTH(ProjectCRReceivedDate) = " + MonthYear[0] + " AND YEAR(ProjectCRReceivedDate) = " + MonthYear[1] + " ) ";
+                    whereCondition.Append("AND ( MONTH(ProjectCRReceivedDate) = " + MonthYear[0] + " AND YEAR(ProjectCRReceivedDate) = " + MonthYear[1] + " ) ");
                 }
-                StringBuilder str_select = new StringBuilder();
-                //Normal Condition
-                str_select.Append("SELECT * FROM tbl_CR_Details ");
-                if (status == "Working")
-                { str_select.Append("WHERE CR_Status = 'Working' "); }
-                else if (status == "Completed")
-                { str_select.Append("WHERE CR_Status = 'Completed' "); }
-                else if (status == "UAT")
-                { str_select.Append("WHERE CR_Status = 'UAT' "); }
-                //check condition for Month Year Filter
-                if (!string.IsNullOrEmpty(dateFilter))
-                { str_select.Append(dateFilter); }
-                //Applying Order By On CR_ID
-                str_select.Append("ORDER BY CR_ID DESC");
-                DataTable cr_dt = Shared.DbHelper.ExecuteTextQuerySql(Get_Connection_String(), str_select.ToString());
+                SqlParameter param = new SqlParameter(parameterName: "@WhereQuery", value: string.IsNullOrEmpty(whereCondition.ToString()) ? Convert.DBNull : whereCondition.ToString());
+                DataTable cr_dt = Shared.DbHelper.GetDataTableWithParameterArraySql(Get_Connection_String(), "sp_Get_CR_Tracker_Details", param);
                 return PartialView(cr_dt);
             }
             catch (Exception ex)
@@ -122,10 +117,13 @@ namespace CR_Tracker_Module_New.Controllers
             try
             {
                 var CR_Details = new List<CR_Pie_Chart_Count>();
-                string str_select = "SELECT CR_Status, COUNT(*) AS CR_Status_Count FROM tbl_CR_Details GROUP BY CR_Status";
-                DataTable cr_dt = Shared.DbHelper.ExecuteTextQuerySql(Get_Connection_String(), str_select);
-                if (cr_dt!=null && cr_dt.Rows.Count > 0)
+                StringBuilder whereCondition = new StringBuilder();
+                //whereCondition.Append("Manager = 'Pravat Sharma'");  // You Can Where condtion (Like CR Created By)
+                SqlParameter param = new SqlParameter(parameterName: "@WhereQuery", value: string.IsNullOrEmpty(whereCondition.ToString()) ? Convert.DBNull : whereCondition.ToString());
+                DataTable cr_dt = Shared.DbHelper.GetDataTableWithParameterArraySql(Get_Connection_String(), "sp_Get_Pie_Chart_CR_Details", param);
+                if (cr_dt != null && cr_dt.Rows.Count > 0)
                 {
+                    //convert datatable to onject list
                     CR_Details = ConvertDataTable<CR_Pie_Chart_Count>(cr_dt);
                 }
                 return Json(CR_Details, JsonRequestBehavior.AllowGet);
@@ -141,8 +139,10 @@ namespace CR_Tracker_Module_New.Controllers
             try
             {
                 var CR_Details = new List<CR_Stack_Bar_Count>();
-                string str_select = "SELECT ProjectCRReceivedDate,CR_Status FROM tbl_CR_Details where(ProjectCRReceivedDate > dateadd(m, -6, getdate() - datepart(d, getdate()) + 1))";
-                DataTable cr_dt = Shared.DbHelper.ExecuteTextQuerySql(Get_Connection_String(), str_select);
+                StringBuilder whereCondition = new StringBuilder();
+                //whereCondition.Append("Manager = 'Pravat Sharma'");  // You Can Where condtion (Like CR Created By)
+                SqlParameter param = new SqlParameter(parameterName: "@WhereQuery", value: string.IsNullOrEmpty(whereCondition.ToString()) ? Convert.DBNull : whereCondition.ToString());
+                DataTable cr_dt = Shared.DbHelper.GetDataTableWithParameterArraySql(Get_Connection_String(), "sp_Get_Six_Month_Chart_CR_Details", param);
                 if (cr_dt != null && cr_dt.Rows.Count > 0)
                 {
                     //getting last 6 month records
@@ -162,7 +162,7 @@ namespace CR_Tracker_Module_New.Controllers
                         var cr_count_obj = new CR_Stack_Bar_Count();
                         cr_count_obj.CR_Months = today.ToString("MMM-yy");
                         cr_count_obj.Completed_Count = cr_obj.Where(a => a.Field<string>("CR_Status") == "Completed").Count();
-                        cr_count_obj.UAT_Count= cr_obj.Where(a => a.Field<string>("CR_Status") == "UAT").Count();
+                        cr_count_obj.UAT_Count = cr_obj.Where(a => a.Field<string>("CR_Status") == "UAT").Count();
                         cr_count_obj.Pending_Count = cr_obj.Where(a => a.Field<string>("CR_Status") == "Pending").Count();
                         cr_count_obj.Other_Count = cr_obj.Where(a => a.Field<string>("CR_Status") != "Completed" && a.Field<string>("CR_Status") != "UAT" && a.Field<string>("CR_Status") != "Pending").Count();
                         CR_Details.Add(cr_count_obj);
@@ -180,31 +180,27 @@ namespace CR_Tracker_Module_New.Controllers
         {
             try
             {
-                string str_select = "SELECT * FROM tbl_cr_remark_details WHERE Ref_CR_ID = " + ref_cr_id + "";
-                DataTable cr_remark_dt = Shared.DbHelper.ExecuteTextQuerySql(Get_Connection_String(), str_select);
-                if (cr_remark_dt!= null && cr_remark_dt.Rows.Count > 0)
+                string whereCondition = "Ref_CR_ID = " + ref_cr_id + "";
+                SqlParameter param = new SqlParameter(parameterName: "@WhereQuery", value: string.IsNullOrEmpty(whereCondition) ? Convert.DBNull : whereCondition);
+                DataTable cr_remark_dt = Shared.DbHelper.GetDataTableWithParameterArraySql(Get_Connection_String(), "sp_Get_CR_Remarks_Details_For_Select_Edit", param);
+                if (cr_remark_dt != null && cr_remark_dt.Rows.Count > 0)
                 {
-                    //var CR_Date_List = cr_remark_dt.AsEnumerable().GroupBy(a => new { Year = a.Field<DateTime>("CR_Remark_Saved_Date").Year, Month = a.Field<DateTime>("CR_Remark_Saved_Date").Month, Day = a.Field<DateTime>("CR_Remark_Saved_Date").Day }).Select(a => new { Year = a.Key.Year, Month = a.Key.Month, Day = a.Key.Day });
-                    var CR_Date_List = cr_remark_dt.AsEnumerable().GroupBy(a => new { Year = a.Field<DateTime>("CR_Remark_Saved_Date").Year, Month = a.Field<DateTime>("CR_Remark_Saved_Date").Month, Day = a.Field<DateTime>("CR_Remark_Saved_Date").Day }).Select(a => new { Date = new DateTime(a.Key.Year, a.Key.Month, a.Key.Day) }).OrderByDescending(a=>a.Date);
+                    var CR_Date_List = cr_remark_dt.AsEnumerable().GroupBy(a => new { Year = a.Field<DateTime>("CR_Remark_Saved_Date").Year, Month = a.Field<DateTime>("CR_Remark_Saved_Date").Month, Day = a.Field<DateTime>("CR_Remark_Saved_Date").Day }).Select(a => new { Date = new DateTime(a.Key.Year, a.Key.Month, a.Key.Day) }).OrderByDescending(a => a.Date);
                     foreach (var UniqueDt in CR_Date_List)
                     {
                         DateTime Fdate = UniqueDt.Date;
                         DateTime Sdate = UniqueDt.Date.AddDays(1);
 
                         var get_remarks = cr_remark_dt.AsEnumerable().Where(a => (Convert.ToDateTime(a["CR_Remark_Saved_Date"]) >= Fdate && (Convert.ToDateTime(a["CR_Remark_Saved_Date"]) <= Convert.ToDateTime(Sdate)))).ToList();
-                        if (get_remarks!= null && get_remarks.Count > 0)
+                        if (get_remarks != null && get_remarks.Count > 0)
                         {
                             foreach (var cr_remark_obj in get_remarks)
                             {
                                 string getTimeline = cr_remark_obj["CR_Remark_Saved_Date"].ToString();
                             }
-                            
                         }
                     }
-
-
                 }
-                
                 return PartialView(cr_remark_dt);
             }
             catch (Exception ex)
@@ -218,8 +214,9 @@ namespace CR_Tracker_Module_New.Controllers
         {
             try
             {
-                string str_select = "SELECT CR_Remark FROM tbl_cr_remark_details WHERE CR_Remark_ID = " + cr_remark_id + "";
-                DataTable cr_remark_dt = Shared.DbHelper.ExecuteTextQuerySql(Get_Connection_String(), str_select);
+                string whereCondition = "CR_Remark_ID = " + cr_remark_id + "";
+                SqlParameter param = new SqlParameter(parameterName: "@WhereQuery", value: string.IsNullOrEmpty(whereCondition) ? Convert.DBNull : whereCondition);
+                DataTable cr_remark_dt = Shared.DbHelper.GetDataTableWithParameterArraySql(Get_Connection_String(), "sp_Get_CR_Remarks_Details_For_Select_Edit", param);
                 if (cr_remark_dt != null && cr_remark_dt.Rows.Count > 0)
                 {
                     string cr_remark = cr_remark_dt.Rows[0]["CR_Remark"].ToString();
@@ -233,28 +230,40 @@ namespace CR_Tracker_Module_New.Controllers
             }
         }
 
-        public JsonResult Add_Update_CR_Remark_Details(string add_update_action, string cr_remark_id,string ref_cr_id,string cr_remark)
+        public JsonResult Add_Update_CR_Remark_Details(string add_update_action, string cr_remark_id, string ref_cr_id, string cr_remark)
         {
             try
             {
-                string login_user_email = "Ajay.Bind@hdfcergo.com";
-                if (add_update_action == "SAVE" &&  !string.IsNullOrEmpty(ref_cr_id) && !string.IsNullOrEmpty(cr_remark))
+                // Validation before save or update---------------------------------
+                if (add_update_action == "SAVE" && string.IsNullOrEmpty(ref_cr_id) && string.IsNullOrEmpty(cr_remark))
                 {
-                    string str_insert = "INSERT INTO tbl_cr_remark_details ([Ref_CR_ID],[CR_Remark],[CR_Remark_Saved_By],[CR_Remark_Saved_Date]) VALUES (" + ref_cr_id + ", '" + cr_remark + "', '" + login_user_email + "', GETDATE()) ";
-                    bool insert_operation = Shared.DbHelper.Common_DDL_Query(Get_Connection_String(), str_insert);
-                    if (insert_operation)
-                    {
-                        return Json(new { ok = true, data = "Remark Saved !", JsonRequestBehavior.AllowGet });
-                    }
+                    return Json(new { ok = false, data = "Unable to save or update details!!", JsonRequestBehavior.AllowGet });
                 }
-                else if (add_update_action == "UPDATE" && !string.IsNullOrEmpty(cr_remark_id) && !string.IsNullOrEmpty(cr_remark))
+                else if (add_update_action == "UPDATE" && string.IsNullOrEmpty(cr_remark_id) && string.IsNullOrEmpty(cr_remark))
                 {
-                    string str_insert = "UPDATE tbl_cr_remark_details SET [CR_Remark]='" + cr_remark + "', [CR_Remark_Updated_By]='" + login_user_email + "',[CR_Remark_Updated_Date] = GETDATE() WHERE CR_Remark_ID = " + cr_remark_id + "";
-                    bool update_operation = Shared.DbHelper.Common_DDL_Query(Get_Connection_String(), str_insert);
-                    if (update_operation)
-                    {
-                        return Json(new { ok = true, data = "Remark Updated !", JsonRequestBehavior.AllowGet });
-                    }
+                    return Json(new { ok = false, data = "Unable to save or update details!!", JsonRequestBehavior.AllowGet });
+                }
+
+                // Check And Apply condition---------------------------------------
+                string login_user_email = "Ajay.Bind@hdfcergo.com";
+                string whereCondition = string.Empty;
+                if (add_update_action == "UPDATE")
+                {
+                    whereCondition = " CR_Remark_ID = " + cr_remark_id + "";
+                }
+
+                // SQL Operation--------------------------------------------------
+                SqlParameter[] param ={
+                        new SqlParameter(parameterName: "@Operation",value: add_update_action.Trim()),
+                        new SqlParameter(parameterName: "@WhereQuery", value: string.IsNullOrEmpty(whereCondition) ? Convert.DBNull : whereCondition),
+                        new SqlParameter(parameterName: "@RefCRID", value: ref_cr_id),
+                        new SqlParameter(parameterName: "@Remark", value: "'"+cr_remark+"'"),
+                        new SqlParameter(parameterName: "@LoginEmail", value: "'"+login_user_email+"'"),
+                      };
+                string insert_operation = Shared.DbHelper.ExecuteNonQuerySql(Get_Connection_String(), "sp_Save_Update_CR_Remarks_Details", param);
+                if (Convert.ToInt32(insert_operation) > 0)
+                {
+                    return Json(new { ok = true, data = add_update_action == "SAVE" ? "Remark Saved !" : "Remark Updated !", JsonRequestBehavior.AllowGet });
                 }
                 return Json(new { ok = false, data = "Unable to save or update details!!", JsonRequestBehavior.AllowGet });
             }
@@ -262,7 +271,7 @@ namespace CR_Tracker_Module_New.Controllers
             {
                 return Json(new { ok = false, data = ex.Message.ToString(), JsonRequestBehavior.AllowGet });
             }
-            
+
         }
     }
 }
