@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.IO;
+using Ionic.Zip;
 
 namespace CR_Tracker_Module_New.Controllers
 {
@@ -273,5 +275,48 @@ namespace CR_Tracker_Module_New.Controllers
             }
 
         }
+
+        public ActionResult Download_CR_Tracker_Files_In_Zip(int fileID)
+        {
+            try
+            {
+                string[] filePaths = Directory.GetFiles(Server.MapPath("~/CR_Tracker_Files/"));
+                List<FileModel> files = new List<FileModel>();
+                foreach (string filePath in filePaths)
+                {
+                    files.Add(new FileModel()
+                    {
+                        FileName = Path.GetFileName(filePath),
+                        FilePath = filePath,
+                        IsSelected = true
+                    });
+                }
+
+                using (ZipFile zip = new ZipFile())
+                {
+                    zip.AlternateEncodingUsage = ZipOption.AsNecessary;
+                    zip.AddDirectoryByName("Files");
+                    foreach (FileModel file in files)
+                    {
+                        if (file.IsSelected)
+                        {
+                            zip.AddFile(file.FilePath, "Files");
+                        }
+                    }
+                    string zipName = String.Format("Zip_{0}.zip", DateTime.Now.ToString("yyyy-MMM-dd-HHmmss"));
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        zip.Save(memoryStream);
+                        return File(memoryStream.ToArray(), "application/zip", zipName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error_Message = ex.Message.ToString();
+                return View();
+            }
+        }
+
     }
 }

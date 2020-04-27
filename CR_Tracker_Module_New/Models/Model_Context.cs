@@ -31,4 +31,10 @@ namespace CR_Tracker_Module_New.Models
         public int Other_Count { get; set; }
     }
 
+    public class FileModel
+    {
+        public string FileName { get; set; }
+        public string FilePath { get; set; }
+        public bool IsSelected { get; set; }
+    }
 }

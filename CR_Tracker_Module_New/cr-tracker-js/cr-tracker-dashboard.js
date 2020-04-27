@@ -46,8 +46,11 @@ var ChartHelper = {
             chart1.hiddenState.properties.opacity = 0; // this creates initial fade-in
             chart1.data = data;
 
-            chart1.innerRadius = am4core.percent(40);
-            chart1.depth = 120;
+            chart1.innerRadius = am4core.percent(35);
+            chart1.depth = 90;
+            //chart1.height = 350;
+            //chart1.width = 400;
+
             chart1.legend = new am4charts.Legend();
 
             var series = chart1.series.push(new am4charts.PieSeries3D());
