@@ -465,6 +465,19 @@ $(document).on('click', '.btn-edit-remark', function () {
 })
 
 
+$(document).on('click', '#btn_dt_search', function () {
+    var search_date = $.trim($('#txt_from_to_date_search').val());
+    var search_from_date = $.trim($('#txt_hidden_from_dt').val());
+    var search_to_date = $.trim($('#txt_hidden_to_dt').val());
+    
+    if (search_date =="") {
+        alert("Please Select Date-Range For Search !!");
+        return false;
+    }
+})
 
 
-
+$(document).on('click', '#btn_clear_dt', function () {
+    $('#txt_from_to_date_search').val('');
+    $('#txt_hidden_from_dt,#txt_hidden_to_dt').val('');
+})

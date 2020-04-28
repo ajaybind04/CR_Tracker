@@ -3,6 +3,7 @@
 
 <style>.cr-tracker-id {text-decoration: underline; cursor: pointer;  color: blueviolet; font-weight: bold; }</style>
 
+
 <table class="table m-0 table-bordered table-hover" id="example1">
     <thead>
         <tr>
@@ -90,5 +91,27 @@
             table.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
         }
+    });
+
+    $('#example1_filter').prepend('<label>Search Date:<input type="text" style="width: 175px;" class="form-control form-control-sm" id="txt_from_to_date_search" autocomplete="off" placeholder="Search By Date"><input type="button" value="Search" id="btn_dt_search"/><input type="button" value="Clear" id="btn_clear_dt"/>&nbsp;&nbsp;</label>');
+
+    $('#txt_from_to_date_search').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        autoUpdateInput: false,
+        startDate: moment().subtract(29, 'days'),
+        endDate: moment()
+    }, function (start, end) {
+        $('#txt_from_to_date_search').val(start.format('DD-MM-YYYY') + ' - ' + end.format('DD-MM-YYYY'))
+        //console.log('You chose: ' + start.format('DD-MM-YYYY') + ' - ' + end.format('DD-MM-YYYY'))
+        //window.alert('You chose: ' + start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+        $('#txt_hidden_from_dt').val(start.format('DD-MM-YYYY'));
+        $('#txt_hidden_to_dt').val(end.format('DD-MM-YYYY'));
     });
 </script>

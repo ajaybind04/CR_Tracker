@@ -103,6 +103,7 @@
     <Content Include="Content\buttons.bootstrap4.min.css" />
     <Content Include="Content\cr-tracker-dashboard.css" />
     <Content Include="Content\dataTables.bootstrap4.min.css" />
+    <Content Include="Content\daterangepicker.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\adminlte.min.js" />
@@ -116,6 +117,7 @@
     <Content Include="cr-tracker-js\cr-tracker-dashboard.js" />
     <Content Include="Scripts\dataTables.bootstrap4.min.js" />
     <Content Include="Scripts\dataTables.buttons.min.js" />
+    <Content Include="Scripts\daterangepicker.js" />
     <Content Include="Scripts\font-awsome.js" />
     <Content Include="Scripts\jquery-1.12.2.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -124,6 +126,7 @@
     <Content Include="Scripts\jquery.dataTables.min.js" />
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jszip.min.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\pdfmake.min.js" />
     <Content Include="Scripts\vfs_fonts.js" />
     <Content Include="Web.config" />

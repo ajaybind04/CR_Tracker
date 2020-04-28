@@ -14,7 +14,8 @@
     <link href="~/Content/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/Content/buttons.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/Content/cr-tracker-dashboard.css" rel="stylesheet" />
-
+    <!-- daterangepicker -->
+    <link href="~/Content/daterangepicker.css" rel="stylesheet" />
     <script src="~/Scripts/jquery.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/font-awsome.js"></script>
@@ -32,7 +33,9 @@
     <script src="~/Scripts/amcharts-core.js"></script>
     <script src="~/Scripts/amcharts-charts.js"></script>
     <script src="~/Scripts/amcharts-animated.js"></script>
-
+    <!-- daterangepicker -->
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/daterangepicker.js"></script>
 </head>
 <body>
     <div class="content-header">
@@ -160,6 +163,8 @@
                                 <span aria-hidden="true" title="Remove Filter !">×</span>
                             </button>
                         </div>
+                        <input type="hidden" id="txt_hidden_from_dt" />
+                        <input type="hidden" id="txt_hidden_to_dt" />
                         <div class="table-responsive" style="padding-top: 18px;padding-bottom: 6px;" id="cr_detailsP">
                             <!--Here binding table records using "CR_Details_DataTableP" (Ajax)-->
                             @{ Html.RenderAction("CR_Details_DataTableP", "CR_Tracker");}
