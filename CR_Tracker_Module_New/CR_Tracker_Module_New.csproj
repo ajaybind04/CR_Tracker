@@ -148,6 +148,7 @@
     <Content Include="Views\CR_Tracker\CR_Tracker_Dashboard.cshtml" />
     <Content Include="Views\CR_Tracker\Common_Modals\CR_Tracker_Logs_Modal.cshtml" />
     <Content Include="Views\CR_Tracker\CR_Remark_DetailsP.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
