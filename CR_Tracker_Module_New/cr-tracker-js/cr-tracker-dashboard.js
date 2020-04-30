@@ -268,7 +268,7 @@ var StackBarHelper = {
 
             function Stack_Bar_Click_Event_Common(ev, status) {
                 //alert("Clicked on " + ev.target.dataItem.categoryX + ": " + ev.target.dataItem.valueY + " Status: " + status);
-                var monthYear =ev.target.dataItem.categoryX;
+                var monthYear = ev.target.dataItem.categoryX;
                 Get_CR_Tracker_Table_Details_By_Filter($.trim(status), $.trim(monthYear))
             }
         });
@@ -310,28 +310,43 @@ $(document).on('click', '.btn-clear-status-filter', function () {
 })
 
 function Get_CR_Tracker_Table_Details_By_Filter(clicked_status, MonthClicked) {
-    $('#lbl_cr_details_alert_msg').text(clicked_status);
+    $('#lbl_cr_details_alert_msg').text($.trim(clicked_status));
     if ($.trim(MonthClicked) != "") {
-        $('#lbl_cr_details_alert_msg').text(clicked_status + " Of " + MonthClicked);
+        $('#lbl_cr_details_alert_msg').text($.trim(clicked_status) + " Of " + MonthClicked);
         var month = MonthClicked.split('-')[0]; //getting month name
         var year = MonthClicked.split('-')[1]; //getting year
         MonthClicked = getMonthObject(month) + "-20" + year; // convert to 12-2020 date formate
     }
-    clicked_status != "All CR Module" ? $('.cr-details-alert-message').show() : $('.cr-details-alert-message').hide();
+    $.trim(clicked_status) != "" && $.trim(clicked_status) != "All CR Module" ? $('.cr-details-alert-message').show() : $('.cr-details-alert-message').hide();
+    //Changing Dashboard count color
     $('.cr-count-dashboard').removeClass('selected-card-color');
     $.trim(clicked_status).toLowerCase() != "all cr module" && $.trim(clicked_status).toLowerCase() != "new" ? $('.cr-' + clicked_status.toLowerCase() + '-clicked').addClass('selected-card-color') : $('.cr-all-cr-module-clicked').addClass('selected-card-color');
+
+    //New Search Function Added 
+    var seachByDate = $.trim($('#txt_from_to_date_search').val());
+    var searchByDateFrom = "";
+    var searchByDateTo = "";
+    $('.cr-details-date-alert-message').hide();
+    if (seachByDate != "" && $.trim(MonthClicked) == "") {
+        var searchByDateFrom = $.trim($('#txt_hidden_from_dt').val());
+        var searchByDateTo = $.trim($('#txt_hidden_to_dt').val());
+        $('.cr-details-date-alert-message').show();
+        $('#lbl_cr_details_date_alert_msg').text($.trim(seachByDate));
+    }
+
     $.ajax({
         url: "/CR_Tracker/CR_Details_DataTableP",
         type: "POST",
         contentType: "application/json",
         datatype: "application/json",
-        data: JSON.stringify({ status: $.trim(clicked_status), MonthWiseStatus: $.trim(MonthClicked) }),
+        data: JSON.stringify({ status: $.trim(clicked_status), MonthWiseStatus: $.trim(MonthClicked), FilterByDateFrom: $.trim(searchByDateFrom), FilterByDateTo: $.trim(searchByDateTo) }),
         async: true,
         beforeSend: function () {
             //$('#cr_detailsP').html('');
             $('.cr-details-table-overlay').show();
         },
         complete: function () {
+            $('#txt_from_to_date_search').val(seachByDate); //feeling again
             $('.cr-details-table-overlay').hide();
         },
         success: function (result) {
@@ -469,15 +484,19 @@ $(document).on('click', '#btn_dt_search', function () {
     var search_date = $.trim($('#txt_from_to_date_search').val());
     var search_from_date = $.trim($('#txt_hidden_from_dt').val());
     var search_to_date = $.trim($('#txt_hidden_to_dt').val());
-    
-    if (search_date =="") {
+
+    if (search_date == "") {
         alert("Please Select Date-Range For Search !!");
         return false;
     }
+    Get_CR_Tracker_Table_Details_By_Filter("", "");
 })
 
 
-$(document).on('click', '#btn_clear_dt', function () {
+$(document).on('click', '#btn_clear_dt,.btn-clear-date-filter', function () {
     $('#txt_from_to_date_search').val('');
     $('#txt_hidden_from_dt,#txt_hidden_to_dt').val('');
+    Get_CR_Tracker_Table_Details_By_Filter("", "");
 })
+
+

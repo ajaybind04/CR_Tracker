@@ -83,7 +83,7 @@ namespace CR_Tracker_Module_New.Controllers
             }
         }
 
-        public ActionResult CR_Details_DataTableP(string status, string MonthWiseStatus)
+        public ActionResult CR_Details_DataTableP(string status, string MonthWiseStatus, string FilterByDateFrom, string FilterByDateTo)
         {
             try
             {
@@ -103,6 +103,15 @@ namespace CR_Tracker_Module_New.Controllers
                     var MonthYear = MonthWiseStatus.Split('-');
                     whereCondition.Append("AND ( MONTH(ProjectCRReceivedDate) = " + MonthYear[0] + " AND YEAR(ProjectCRReceivedDate) = " + MonthYear[1] + " ) ");
                 }
+                //3. Check Condtion For Search By From And To Date
+                else if (!string.IsNullOrEmpty(FilterByDateFrom) && !string.IsNullOrEmpty(FilterByDateTo) && string.IsNullOrEmpty(MonthWiseStatus))
+                {
+                    if (!string.IsNullOrEmpty(whereCondition.ToString()))
+                    { whereCondition.Append("AND ");}
+                   
+                    whereCondition.Append("( ProjectCRReceivedDate >= '" + FilterByDateFrom + "' AND ProjectCRReceivedDate <= '" + FilterByDateTo + "')");
+                }
+
                 SqlParameter param = new SqlParameter(parameterName: "@WhereQuery", value: string.IsNullOrEmpty(whereCondition.ToString()) ? Convert.DBNull : whereCondition.ToString());
                 DataTable cr_dt = Shared.DbHelper.GetDataTableWithParameterArraySql(Get_Connection_String(), "sp_Get_CR_Tracker_Details", param);
                 return PartialView(cr_dt);

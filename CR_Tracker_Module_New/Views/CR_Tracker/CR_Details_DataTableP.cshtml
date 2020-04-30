@@ -44,13 +44,13 @@
                     <td>@rows["CategoryList"]</td>
                     <td>@rows["ProjectCompletedSchedule"]</td>
                     <td>@rows["KeyProjects"]</td>
-                    <td>@rows["ProjectCRReceivedDate"]</td>
-                    <td>@rows["FinalProjectCRReceivedDate"]</td>
+                    <td>@(!string.IsNullOrEmpty(rows["ProjectCRReceivedDate"].ToString()) ? Convert.ToDateTime(rows["ProjectCRReceivedDate"]).ToString("dd-MMM-yyyy") : "-")</td>
+                    <td>@(!string.IsNullOrEmpty(rows["FinalProjectCRReceivedDate"].ToString()) ? Convert.ToDateTime(rows["FinalProjectCRReceivedDate"]).ToString("dd-MMM-yyyy") : "-")</td>
                     <td>@rows["NoOfCRReceivedDuringUAT"]</td>
-                    <td>@rows["UATDeliveryDate"]</td>
-                    <td>@rows["UATSignoffDate"]</td>
-                    <td>@rows["ProjectCRLiveDate"]</td>
-                    <td>@rows["FirstCommittedLiveDate"]</td>
+                    <td>@(!string.IsNullOrEmpty(rows["UATDeliveryDate"].ToString()) ? Convert.ToDateTime(rows["UATDeliveryDate"]).ToString("dd-MMM-yyyy") : "-")</td>
+                    <td>@(!string.IsNullOrEmpty(rows["UATSignoffDate"].ToString()) ? Convert.ToDateTime(rows["UATSignoffDate"]).ToString("dd-MMM-yyyy") : "-")</td>
+                    <td>@(!string.IsNullOrEmpty(rows["ProjectCRLiveDate"].ToString()) ? Convert.ToDateTime(rows["ProjectCRLiveDate"]).ToString("dd-MMM-yyyy") : "-")</td>
+                    <td>@(!string.IsNullOrEmpty(rows["FirstCommittedLiveDate"].ToString()) ? Convert.ToDateTime(rows["FirstCommittedLiveDate"]).ToString("dd-MMM-yyyy") : "-")</td>
                     <td>@rows["TAT"]</td>
                     <td>@rows["NoOfShowstoppersPostGoLive"]</td>
                     <td>@rows["UnitLead"]</td>
@@ -93,9 +93,11 @@
         }
     });
 
-    $('#example1_filter').prepend('<label>Search Date:<input type="text" style="width: 175px;" class="form-control form-control-sm" id="txt_from_to_date_search" autocomplete="off" placeholder="Search By Date"><input type="button" value="Search" id="btn_dt_search"/><input type="button" value="Clear" id="btn_clear_dt"/>&nbsp;&nbsp;</label>');
+    $('#example1_filter').prepend('<label>Search Date:<input type="text" style="width: 195px;" class="form-control form-control-sm" id="txt_from_to_date_search" autocomplete="off" placeholder="Search By Date"><input type="button" value="Search" id="btn_dt_search"/><input type="button" value="Clear" id="btn_clear_dt"/>&nbsp;&nbsp;</label>');
 
     $('#txt_from_to_date_search').daterangepicker({
+        locale: { format: "DD-MMM-YYYY", cancelLabel: "Clear" },
+        //autoUpdateInput: false,
         ranges: {
             'Today': [moment(), moment()],
             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -104,14 +106,17 @@
             'This Month': [moment().startOf('month'), moment().endOf('month')],
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
-        autoUpdateInput: false,
-        startDate: moment().subtract(29, 'days'),
-        endDate: moment()
-    }, function (start, end) {
-        $('#txt_from_to_date_search').val(start.format('DD-MM-YYYY') + ' - ' + end.format('DD-MM-YYYY'))
-        //console.log('You chose: ' + start.format('DD-MM-YYYY') + ' - ' + end.format('DD-MM-YYYY'))
-        //window.alert('You chose: ' + start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
-        $('#txt_hidden_from_dt').val(start.format('DD-MM-YYYY'));
-        $('#txt_hidden_to_dt').val(end.format('DD-MM-YYYY'));
+        startDate: moment().subtract(0, 'days'),
+        endDate: moment(),
     });
+
+    $('#txt_from_to_date_search').on('apply.daterangepicker', function (ev, picker) {
+        $('#txt_from_to_date_search').val(picker.startDate.format('DD-MMM-YYYY') + ' - ' + picker.endDate.format('DD-MMM-YYYY'))
+        console.log('You chose: ' + picker.startDate.format('DD-MM-YYYY') + ' - ' + picker.endDate.format('DD-MM-YYYY'))
+        //window.alert('You chose: ' + picker.startDate.format('MMMM D, YYYY') + ' - ' + picker.endDate.format('MMMM D, YYYY'))
+        $('#txt_hidden_from_dt').val(picker.startDate.format('YYYY-MM-DD'));
+        $('#txt_hidden_to_dt').val(picker.endDate.format('YYYY-MM-DD'));
+    });
+
+    $('#txt_from_to_date_search').val('');
 </script>
