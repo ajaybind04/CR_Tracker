@@ -57,7 +57,7 @@
                     <td>@rows["Manager"]</td>
                     <td>@rows["ReasonRCA"]</td>
                     <td><a href="#">Edit</a></td>
-                    <td>@Html.ActionLink("Download", "Download_CR_Tracker_Files_In_Zip", "CR_Tracker", new { fileID = 1 }, null)</td>
+                    <td>@Html.ActionLink("Download", "Download_CR_Tracker_Files_In_Zip", "CR_Tracker", new { crID = 1 }, null)</td>
                     <td style="text-align:center;">@(!string.IsNullOrEmpty(rows["CR_Status"].ToString()) ? rows["CR_Status"] : "-" )</td>
                 </tr>
             }

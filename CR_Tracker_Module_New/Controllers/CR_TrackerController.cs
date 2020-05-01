@@ -285,45 +285,56 @@ namespace CR_Tracker_Module_New.Controllers
 
         }
 
-        public ActionResult Download_CR_Tracker_Files_In_Zip(int fileID)
+        public ActionResult Download_CR_Tracker_Files_In_Zip(int crID)
         {
             try
             {
-                string[] filePaths = Directory.GetFiles(Server.MapPath("~/CR_Tracker_Files/"));
-                List<FileModel> files = new List<FileModel>();
-                foreach (string filePath in filePaths)
+                string whereCondition = "CR_ID = " + crID + "";
+                SqlParameter param = new SqlParameter(parameterName: "@WhereQuery", value: string.IsNullOrEmpty(whereCondition) ? Convert.DBNull : whereCondition);
+                DataTable cr_file_dt = Shared.DbHelper.GetDataTableWithParameterArraySql(Get_Connection_String(), "sp_Download_Files_In_Zip", param);
+                if (cr_file_dt != null && cr_file_dt.Rows.Count > 0)
                 {
-                    files.Add(new FileModel()
+                    //convert datatable to onject list
+                    List<FileModel> files = new List<FileModel>();
+                    //string[] filePaths = Directory.GetFiles(Server.MapPath("~/CR_Tracker_Files/"));
+                    foreach (DataRow row in cr_file_dt.Rows)
                     {
-                        FileName = Path.GetFileName(filePath),
-                        FilePath = filePath,
-                        IsSelected = true
-                    });
-                }
-
-                using (ZipFile zip = new ZipFile())
-                {
-                    zip.AlternateEncodingUsage = ZipOption.AsNecessary;
-                    zip.AddDirectoryByName("Files");
-                    foreach (FileModel file in files)
-                    {
-                        if (file.IsSelected)
+                        string filePath = Server.MapPath("~/CR_Tracker_Files/" + row["FileName"].ToString());
+                        if (System.IO.File.Exists(filePath))
                         {
-                            zip.AddFile(file.FilePath, "Files");
+                            files.Add(new FileModel()
+                            {
+                                FileName = Path.GetFileName(filePath),
+                                FilePath = filePath,
+                                IsSelected = true
+                            });
                         }
                     }
-                    string zipName = String.Format("Zip_{0}.zip", DateTime.Now.ToString("yyyy-MMM-dd-HHmmss"));
-                    using (MemoryStream memoryStream = new MemoryStream())
+                    using (ZipFile zip = new ZipFile())
                     {
-                        zip.Save(memoryStream);
-                        return File(memoryStream.ToArray(), "application/zip", zipName);
+                        zip.AlternateEncodingUsage = ZipOption.AsNecessary;
+                        zip.AddDirectoryByName("Files");
+                        foreach (FileModel file in files)
+                        {
+                            if (file.IsSelected)
+                            {
+                                zip.AddFile(file.FilePath, "Files");
+                            }
+                        }
+                        string zipName = String.Format("Zip_{0}.zip", DateTime.Now.ToString("yyyy-MMM-dd-HHmmss"));
+                        using (MemoryStream memoryStream = new MemoryStream())
+                        {
+                            zip.Save(memoryStream);
+                            return File(memoryStream.ToArray(), "application/zip", zipName);
+                        }
                     }
                 }
+                return RedirectToAction("CR_Tracker_Dashboard");
             }
             catch (Exception ex)
             {
                 ViewBag.Error_Message = ex.Message.ToString();
-                return View();
+                return RedirectToAction("CR_Tracker_Dashboard");
             }
         }
 
